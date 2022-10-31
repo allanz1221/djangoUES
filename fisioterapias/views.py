@@ -13,7 +13,9 @@ def hello(request):
 
 #@login_required
 def index(request):
+    citas = Cita.objects.all()
     context = {
+        "citas": citas,
         "hide_new_button": True,
         "priorities": "Event.priorities_list",
         "today": localdate(),
