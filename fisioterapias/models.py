@@ -24,7 +24,7 @@ class Aula(models.Model):
 class Cita(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
-    motivo = models.CharField(max_length=200)
+    motivo = models.CharField(max_length=200, blank=False)
     fecha = models.DateTimeField()
     cumplio = models.BooleanField()
     costo = models.FloatField()
