@@ -31,3 +31,8 @@ class Cita(models.Model):
 
     def __str__(self):
         return self.cliente.nombre
+
+class CierreCaja(models.Model):
+    cajero = models.CharField(max_length=200, blank=False)
+    fecha = models.DateTimeField()
+    cantidad = models.FloatField()
