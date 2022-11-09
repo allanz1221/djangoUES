@@ -18,7 +18,7 @@ admin.site.register(Aula)
 admin.site.register(Procedencia)
 
 class Cierre(admin.ModelAdmin):
-    list_display = ('cliente', 'fecha')
+    list_display = ('cajero', 'fecha', 'cantidad')
     use_bulk = True
 
 admin.site.register(CierreCaja, Cierre)
