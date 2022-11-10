@@ -3,8 +3,8 @@ from django.db import models
 
 # Create your models here.
 
-class PE(models.Model):
-    programa_educativo = models.CharField(max_length=200, blank=False)
+class ProgramaEducativo(models.Model):
+    nombre = models.CharField(max_length=200, blank=False)
     siglas = models.CharField(max_length=200, blank=False)
 
 class Procedencia(models.Model):
@@ -17,7 +17,7 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=200, blank=False)
     procedencia = models.ForeignKey(Procedencia, on_delete=models.CASCADE, blank=False)
     expediente = models.CharField(max_length=200, blank=False)
-    PE = models.ForeignKey(PE, on_delete=models.CASCADE, blank=True)
+    programaeducativo = models.ForeignKey(ProgramaEducativo, on_delete=models.CASCADE, blank=True)
 
 class Aula(models.Model):
     aula = models.CharField(max_length=200, blank=False)
