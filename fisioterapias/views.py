@@ -5,9 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Cita, Aula
 from django.utils.timezone import localdate
 from django.views.defaults import bad_request, server_error
-from .forms import AddCita
+#from .forms import AddCita
 from django.contrib import messages
-# Create your views here.
 
 def index(request):
     #citas = list(Cita.objects.values())
@@ -21,55 +20,38 @@ def index(request):
 
 #@login_required
 def aula(request, id):
-    Aula = None
+    aula = None
     if id == 1:
-        Aula = 1
+        aula = 1
     else:
-        Aula = 2
-    citas = Cita.objects.filter(aula=Aula)
-    form_cita = AddCita()
+        aula = 2
+    citas = Cita.objects.filter(aula=aula)
+    aulas = Aula.objects.filter(id=aula)
     context = {
         "citas": citas,
         "hide_new_button": True,
         "priorities": "Event.priorities_list",
         "today": localdate(),
-          "form_cita": form_cita
+        "aulas": aulas
     }
     return render(request, "aula.html", context)
 
 def guardarCita(request):
-    form = AddCita(request.POST)
-    print(form.errors,form)
-    if form.is_valid():
-        
-        try:
-                #id_aula = request.POST['id_aula']
-                #motivo = request.POST['motivo']
-                #cumplio = request.POST['cumplio']
-                #costo = request.POST['costo'] 
-                #id_cliente = request.POST['id_cliente']
-                #nueva_cita = Cita(aula = id_aula, motivo = motivo, costo= costo, cliente =id_cliente)
-                #member = Member(firstname=request.POST['firstname'], lastname=request.POST['lastname'])
-                #member.save()
-                #nueva_cita.save()
-                ncita = form.save(commit=False)
-                ncita.save()  
-                print(form.errors,form)
-                return JsonResponse({'status','Guardado'})
-        except:
-                return JsonResponse({'status','No guardado'})
-                
-"""     Aula = request.POST.get('aula')
-    citas = Cita.objects.filter(aula=Aula)
-    form_cita = AddCita()
-    context = {
-        "citas": citas,
-        "hide_new_button": True,
-        "priorities": "Event.priorities_list",
-        "today": localdate(),
-        "form_cita": form_cita
-    }                
-    return redirect(request,'aula.html', context) """
+    if request.method == 'POST':
+        cita= Cita()
+        cita.motivo = request.POST.get('motivo')    
+        cita.cumplio = request.POST.get('cumplio')    
+        cita.fecha = request.POST.get('fecha')    
+        cita.costo = request.POST.get('costo')    
+        cita.aula_id = 1
+        cita.cliente_id = 1
+        cita.fecha = localdate()  
+        cita.save()
+        #return JsonResponse({'status','Guardado'}, safe=False)
+        citas = list(Cita.objects.values())
+        return JsonResponse(["Listo"], safe=False)        
+    else:
+        return JsonResponse(["No valido"], safe=False)
 
 # def postuserinfo(request):
 #     if request.method == 'POST':

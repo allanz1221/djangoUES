@@ -118,7 +118,7 @@ $(document).ready(function() {
 
         <br>
         <div id="content" class="col-lg-12">
-            <h1>  {% for aula in citas %} {{ aula.aula.aula }} {% endfor %}</h1>
+            <h1>  {% for aula in aulas %} {{ aula.aula }} {% endfor %}</h1>
             <div id="calendar"></div>
             <div class="modal fade" id="modal-event" tabindex="-1" role="dialog" aria-labelledby="modal-eventLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -155,7 +155,12 @@ $(document).ready(function() {
                         <div id="event-description">
                             <form method="post" id="userinfoform">
                                 {% csrf_token %}
-                                    {{ form_cita }}
+                                    cumplio <input type="input" name="cumplio" id="cumplio">
+                                    <br>
+                                    costo <input type="input" name="costo" id="costo">
+                                    <br>
+                                    Motivo <input type="input" name="motivo" id="motivo">
+
                                 </form>
                                 <button id="guardar">Enviar</button>
 
@@ -185,17 +190,15 @@ $(document).ready(function() {
                 method:'POST',
                 url:'{% url "GuardarCita" %}',
                 data:{
-                    aula:1,
+                    id_aula:'1',
                     motivo:$('#motivo').val(),
                     cumplio:$('#cumplio').val(),
                     costo:$('#costo').val(),
-                    cliente:1,
+                    id_cliente:'1',
                     csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
             }, 
-            success: function() {
-            
-                alert('Data Successfully Posted' + data);
-                
+            success: function(response) {
+                alert('agregado correctamente');
             },
         });
             });

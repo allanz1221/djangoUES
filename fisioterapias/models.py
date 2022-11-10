@@ -12,9 +12,11 @@ class Procedencia(models.Model):
 class Cliente(models.Model):
     nombre = models.CharField(max_length=200)
     procedencia = models.ForeignKey(Procedencia, on_delete=models.CASCADE)
+    expediente = models.CharField(max_length=200)
+    PE = models.ForeignKey(PE, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.nombre
+        return self.nombre + " "+self.expediente + " "+self.PE 
 
 class Aula(models.Model):
     aula = models.CharField(max_length=200)
@@ -37,3 +39,8 @@ class CierreCaja(models.Model):
     cajero = models.CharField(max_length=200, blank=False)
     fecha = models.DateTimeField()
     cantidad = models.FloatField()
+    comentarios = models.CharField(max_length=200, blank=False)
+
+class PE(models.Model):
+    programa_educativo = models.CharField(max_length=200, blank=False)
+    siglas = models.CharField(max_length=200, blank=False)
