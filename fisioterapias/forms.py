@@ -4,7 +4,12 @@ from fisioterapias.models import Cita
 class AddCita(forms.ModelForm):
     class Meta:
         model = Cita
-        fields = {'motivo'}
+        fields = {'aula', 'motivo', 'cumplio','costo', 'cliente'}
         labels = {
-            'motivo': 'MOTIVO'
+            'aula':'aula', 
+            'motivo':'motivo', 
+            'cumplio':'cumplio',
+            'costo':'costo', 
+            'cliente':'cliente'
+            
         }

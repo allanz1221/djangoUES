@@ -33,22 +33,33 @@ def aula(request, id):
         "hide_new_button": True,
         "priorities": "Event.priorities_list",
         "today": localdate(),
-        "form_cita": form_cita
+          "form_cita": form_cita
     }
     return render(request, "aula.html", context)
 
-
 def guardarCita(request):
-    if request.POST:
-        form = AddCita(request.POST)
-        if form.is_valid:
-            try:
-                form.save()
-            except:
-                message(request, "Error al guardar cita")
-                return redirect("index.html")
+    form = AddCita(request.POST)
+    print(form.errors,form)
+    if form.is_valid():
+        
+        try:
+                #id_aula = request.POST['id_aula']
+                #motivo = request.POST['motivo']
+                #cumplio = request.POST['cumplio']
+                #costo = request.POST['costo'] 
+                #id_cliente = request.POST['id_cliente']
+                #nueva_cita = Cita(aula = id_aula, motivo = motivo, costo= costo, cliente =id_cliente)
+                #member = Member(firstname=request.POST['firstname'], lastname=request.POST['lastname'])
+                #member.save()
+                #nueva_cita.save()
+                ncita = form.save(commit=False)
+                ncita.save()  
+                print(form.errors,form)
+                return JsonResponse({'status','Guardado'})
+        except:
+                return JsonResponse({'status','No guardado'})
                 
-    Aula = request.POST.get('aula')
+"""     Aula = request.POST.get('aula')
     citas = Cita.objects.filter(aula=Aula)
     form_cita = AddCita()
     context = {
@@ -58,7 +69,7 @@ def guardarCita(request):
         "today": localdate(),
         "form_cita": form_cita
     }                
-    return redirect(request,'aula.html', context)
+    return redirect(request,'aula.html', context) """
 
 # def postuserinfo(request):
 #     if request.method == 'POST':

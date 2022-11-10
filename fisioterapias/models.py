@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class Procedencia(models.Model):
@@ -26,7 +27,7 @@ class Cita(models.Model):
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
     motivo = models.CharField(max_length=200, blank=False)
     fecha = models.DateTimeField()
-    cumplio = models.BooleanField()
+    cumplio = models.BooleanField(default='0')
     costo = models.FloatField()
 
     def __str__(self):

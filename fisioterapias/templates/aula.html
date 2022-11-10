@@ -141,6 +141,7 @@ $(document).ready(function() {
             </div>
 
 
+            
             <div class="modal fade" id="modal-registro" tabindex="-1" role="dialog" aria-labelledby="modal-eventLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -153,12 +154,10 @@ $(document).ready(function() {
                     <div class="modal-body">
                         <div id="event-description">
                             <form method="post" id="userinfoform">
-                                {% csrf_token %}{% for aula in citas %} 
-                                <input type="hidden" id="aula" value="{{ aula.aula_id }} ">{% endfor %}
-                                Cliente: <input type="text" id="cliente_id"><br>
-                                Motivo: <input type="text" id="motivo">
-                                <button type="submit">Enviar</button>
+                                {% csrf_token %}
+                                    {{ form_cita }}
                                 </form>
+                                <button id="guardar">Enviar</button>
 
                         </div>
                     </div>
@@ -176,28 +175,31 @@ $(document).ready(function() {
     
    
     <script>
-        $(document).ready(function(){
-        $('#userinfoform').on('submit', function(e){
-        $.ajax({
-            method:'POST',
-            url:'guardar',
-            data:{
-                aula:$('#aula').val(),
-                motivo:$('#motivo').val(),
-                cumplio:0,
-                costo:0,
-                cliente_id:$('#cliente_id').val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-        }, 
-        success: function() {
+
+
+
         
-        alert('Data Successfully Posted');
+        $( "#guardar" ).click(function() {
+          
+            $.ajax({
+                method:'POST',
+                url:'{% url "GuardarCita" %}',
+                data:{
+                    aula:1,
+                    motivo:$('#motivo').val(),
+                    cumplio:$('#cumplio').val(),
+                    costo:$('#costo').val(),
+                    cliente:1,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+            }, 
+            success: function() {
             
-        },
+                alert('Data Successfully Posted' + data);
+                
+            },
         });
-        
-        });
-        });
+            });
+      
         </script>
 </div>
 </body>
