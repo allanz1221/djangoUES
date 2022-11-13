@@ -2,7 +2,7 @@ from email import message
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from .models import Cita, Aula
+from .models import Cita, Aula, User, Paciente
 from django.utils.timezone import localdate
 from django.views.defaults import bad_request, server_error
 #from .forms import AddCita
@@ -17,6 +17,33 @@ def index(request):
         "aulas": aulas,
     }
     return render(request, "index.html", context)
+
+def citas(request):
+    #citas = list(Cita.objects.values())
+    #return JsonResponse(citas, safe=False)
+    #return HttpResponse("Hola")
+    citas = Cita.objects.all()
+    aulas = Aula.objects.all()
+    responsables = User.objects.all()
+    pacientes = Paciente.objects.all()
+
+    context = {
+        "citas": citas,
+        "aulas": aulas,
+        "responsables": responsables,
+        "pacientes": pacientes,
+    }
+    return render(request, "citas.html", context)
+
+def reportes(request):
+    #citas = list(Cita.objects.values())
+    #return JsonResponse(citas, safe=False)
+    #return HttpResponse("Hola")
+    aulas = Aula.objects.all()
+    context = {
+        "aulas": aulas,
+    }
+    return render(request, "reportes.html", context)    
 
 #@login_required
 def aula(request, id):
@@ -39,13 +66,17 @@ def aula(request, id):
 def guardarCita(request):
     if request.method == 'POST':
         cita= Cita()
+        cita.paciente_id = request.POST.get('id_paciente')
+        cita.aula_id = request.POST.get('id_aula')
         cita.motivo = request.POST.get('motivo')    
-        cita.cumplio = request.POST.get('cumplio')    
         cita.fecha = request.POST.get('fecha')    
+        cita.hora_inicio = request.POST.get('hora_inicio')    
+        cita.hora_cierre = request.POST.get('hora_cierre')    
+        cita.cumplio = request.POST.get('cumplio')    
         cita.costo = request.POST.get('costo')    
-        cita.aula_id = 1
-        cita.cliente_id = 1
-        cita.fecha = localdate()  
+        cita.comentarios = request.POST.get('comentarios')    
+        cita.responsable_id = request.POST.get('responsable')    
+
         cita.save()
         #return JsonResponse({'status','Guardado'}, safe=False)
         citas = list(Cita.objects.values())
@@ -53,6 +84,21 @@ def guardarCita(request):
     else:
         return JsonResponse(["No valido"], safe=False)
 
+
+def guardarPaciente(request):
+    if request.method == 'POST':
+        paciente= Paciente()
+        paciente.nombre = request.POST.get('nombre')
+        paciente.expediente = request.POST.get('expediente')
+        paciente.procedencia_id = request.POST.get('procedencia_id')
+        paciente.programaeducativo_id = request.POST.get('programaeducativo_id')   
+
+        paciente.save()
+        #return JsonResponse({'status','Guardado'}, safe=False)
+        paciente = list(Paciente.objects.values())
+        return JsonResponse(["Listo"], safe=False)        
+    else:
+        return JsonResponse(["No valido"], safe=False)
 # def postuserinfo(request):
 #     if request.method == 'POST':
 #         userinfo= UserInfo()

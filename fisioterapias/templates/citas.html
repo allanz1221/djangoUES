@@ -1,0 +1,159 @@
+{% extends "base2.html" %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" style="background-color: rgb(236, 236, 236)">
+            <form id="form1">
+                <h3>Registro de citas</h3>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Sala</label>
+                    <select id="id_aula" required>
+                    {% for aula in aulas %}  
+                        <option value="{{ aula.id }}"> {{ aula.nombre }}</option>
+                    {% endfor %}
+                    </select> 
+                    
+                </div>
+
+                <div class="form-group">
+                  <label>Paciente</label>
+                  <select id="id_paciente" required>
+                    {% for paciente in pacientes %}  
+                    <option value="{{ paciente.id }}"> {{ paciente.nombre }}</option>
+                    {% endfor %}
+                  </select> <a href="#">Nuevo</a>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="datetime-local" class="form-control form-control-sm" id="fecha" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Costo</label>
+                    <input type="number" class="form-control" id="costo" placeholder="Costo" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Motivo</label>
+                    <input type="text" class="form-control" id="motivo" placeholder="Motivo de la terapia" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Comentarios</label>
+                    <textarea id="comentarios"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Responsable</label>
+                    <select id="responsable" required>
+                        {% for responsable in responsables %}  
+                        <option value="{{ responsable.id }}"> {{ responsable.username }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+
+                <button type="submit" id="Guardar" class="btn btn-primary">Guardar</button>
+              </form>
+
+        </div>
+        <div class="col">
+
+            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Paciente</th>
+                        <th>Sala</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Motivo</th>
+                        <th>Costo</th>
+                        <th>Comentarios</th>
+                        <th>Resp.</th>
+                         <!--<th>Detalles</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas %} 
+                   <tr>
+                        <td>{{ cita.id }} </td>
+                        <td>{{ cita.paciente.nombre }} </td>
+                        <td>{{ cita.aula.nombre }} </td>
+                        <td>{{ cita.fecha }} </td>
+                        <td>{{ cita.hora_inicio }} - {{ cita.hora_cierre }} </td>
+                        <td>{{ cita.motivo }} </td>
+                        <td>{{ cita.costo }} </td>
+                        <td>{{ cita.comentarios }} </td>
+                        <td>{{ cita.responsable }} </td> 
+                         <!-- <td> Editar Borrar</td>-->
+                    </tr>
+                    {% endfor %}
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+    
+</div>
+
+
+<script src="//code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#example').DataTable({
+        "language": {
+"url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+}
+    });
+});
+</script>
+
+<script>
+
+
+
+        
+    $( "#form1" ).submit(function() {
+      
+      var fecha= $('#fecha').val().split("T");
+      var dia = fecha[0];
+      var hora_inicio_ = fecha[1].split(":");
+      hora_inicio= hora_inicio_[0];
+      var hora_cierre = parseInt(hora_inicio_[0])+1;
+      hora_inicio = hora_inicio + ":"+hora_inicio_[1]+":"+"00";
+      hora_cierre = hora_cierre + ":"+hora_inicio_[1]+":"+"00";
+      
+             $.ajax({
+                    method:'POST',
+                    url:'{% url "GuardarCita" %}',
+                    data:{
+                        id_paciente: $('#id_paciente').val(),
+                        id_aula: $('#id_aula').val(),
+                        motivo: $('#motivo').val(),
+                        fecha: dia,
+                        hora_inicio: hora_inicio,
+                        hora_cierre: hora_cierre,
+                        cumplio: 0,
+                        costo: $('#costo').val(),
+                        comentarios: $('#comentarios').val(),
+                        responsable: $('#responsable').val(),
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                }, 
+                success: function(response) {
+                    alert('agregado correctamente');
+                },
+            }); 
+           // return false;
+        });
+  
+    </script>
+{% endblock %}
