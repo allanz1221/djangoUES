@@ -2,7 +2,7 @@ from email import message
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from .models import Cita, Aula, User, Paciente
+from .models import Cita, Aula, User, Paciente, ProgramaEducativo, Procedencia
 from django.utils.timezone import localdate
 from django.views.defaults import bad_request, server_error
 #from .forms import AddCita
@@ -22,8 +22,10 @@ def citas(request):
     #citas = list(Cita.objects.values())
     #return JsonResponse(citas, safe=False)
     #return HttpResponse("Hola")
-    citas = Cita.objects.all()
+    citas = Cita.objects.all().order_by('-id')
     aulas = Aula.objects.all()
+    programaseducativos = ProgramaEducativo.objects.all()
+    procedencias = Procedencia.objects.all()
     responsables = User.objects.all()
     pacientes = Paciente.objects.all()
 
@@ -32,6 +34,8 @@ def citas(request):
         "aulas": aulas,
         "responsables": responsables,
         "pacientes": pacientes,
+        "programaseducativos": programaseducativos,
+        "procedencias": procedencias
     }
     return render(request, "citas.html", context)
 
@@ -90,13 +94,13 @@ def guardarPaciente(request):
         paciente= Paciente()
         paciente.nombre = request.POST.get('nombre')
         paciente.expediente = request.POST.get('expediente')
-        paciente.procedencia_id = request.POST.get('procedencia_id')
-        paciente.programaeducativo_id = request.POST.get('programaeducativo_id')   
+        paciente.procedencia_id = request.POST.get('paciente_procedencia')
+        paciente.programaeducativo_id = request.POST.get('paciente_programaeducativo')   
 
         paciente.save()
         #return JsonResponse({'status','Guardado'}, safe=False)
         paciente = list(Paciente.objects.values())
-        return JsonResponse(["Listo"], safe=False)        
+        return JsonResponse(paciente, safe=False)        
     else:
         return JsonResponse(["No valido"], safe=False)
 # def postuserinfo(request):

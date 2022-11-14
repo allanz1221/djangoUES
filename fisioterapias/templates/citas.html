@@ -25,9 +25,10 @@
                   <label>Paciente</label>
                   <select id="id_paciente" required>
                     {% for paciente in pacientes %}  
-                    <option value="{{ paciente.id }}"> {{ paciente.nombre }}</option>
+                    <option value="{{ paciente.id }}"> {{ paciente.nombre }} -  {{ paciente.expediente }}</option>
                     {% endfor %}
-                  </select> <a href="#">Nuevo</a>
+                  </select>   <p><a href="#ex1" rel="modal:open">Añadir</a></p>
+
                 </div>
 
                 <div class="form-group">
@@ -103,10 +104,48 @@
     
 </div>
 
+<div id="ex1" class="modal">
+    <form id="form2">
+        <h3>Registro de paciente</h3>
+        {% csrf_token %}
+       
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" id="paciente_nombre" placeholder="Nombre del paciente" required>
 
-<script src="//code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
+          </div>
+
+          <div class="form-group">
+            <label>Expediente</label>
+            <input type="number" class="form-control" id="paciente_expediente" placeholder="Número">
+          </div>
+
+          <div class="form-group">
+            <label>Procedencia</label>
+            <select id="paciente_procedencia" required>
+                {% for procedencia in procedencias %}  
+                <option value="{{ procedencia.id }}"> {{ procedencia.procedencia }}</option>
+                {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Programa Educativo</label>
+            <select id="paciente_programaeducativo" required>
+                {% for programaeducativo in programaseducativos %}  
+                <option value="{{ programaeducativo.id }}"> {{ programaeducativo.siglas }}</option>
+                {% endfor %}
+            </select>
+          </div>
+
+        <button type="submit" id="GuardarPaciente" class="btn btn-primary">Guardar</button>
+        
+      </form>
+    <a href="#" rel="modal:close">Cerrar</a>
+  </div>
+  
+
+
 <script>
 $(document).ready(function () {
     $('#example').DataTable({
@@ -155,5 +194,24 @@ $(document).ready(function () {
            // return false;
         });
   
+
+        $( "#form2" ).submit(function() {
+      
+             $.ajax({
+                    method:'POST',
+                    url:'{% url "GuardarPaciente" %}',
+                    data:{
+                        nombre: $('#paciente_nombre').val(),
+                        expediente: $('#paciente_expediente').val(),
+                        paciente_procedencia: $('#paciente_procedencia').val(),
+                        paciente_programaeducativo: $('#paciente_programaeducativo').val(),
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                }, 
+                success: function(response) {
+                    alert('agregado correctamente');
+                },
+            }); 
+           // return false;
+        });
     </script>
 {% endblock %}
